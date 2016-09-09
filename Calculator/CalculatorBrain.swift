@@ -40,7 +40,9 @@ class CalculatorBrain {
         knownOps["/"] = Op.BinaryOperation("/"){$1 / $0}
         knownOps["+"] = Op.BinaryOperation("+"){$0 + $1}
         knownOps["-"] = Op.BinaryOperation("-"){$1 - $0}
-        knownOps["√"] = Op.UnaryOperation("√", sqrt)
+        knownOps["sin"] = Op.UnaryOperation("√", sin(<#T##x: Double##Double#>))
+        knownOps["cos"] = Op.UnaryOperation("√", sqrt)
+        knownOps["π"] = Op.UnaryOperation("√", sqrt)
     }
     
     private func evaluate(ops: [Op]) -> (result: Double?, remainingOps: [Op]){
