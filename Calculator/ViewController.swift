@@ -12,7 +12,11 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var display: UILabel!
     
+    @IBOutlet weak var history: UILabel!
+    
+    
     var userTyping = false
+    var decimalEntered = false
     
     var brain = CalculatorBrain()
 
@@ -26,12 +30,24 @@ class ViewController: UIViewController {
         }
         
     }
+    
+    @IBAction func appendDecimal(sender: UIButton) {
+        
+        if !decimalEntered {
+            appendDigit(sender)
+            decimalEntered = true
+        }
+    }
+    
+    
 
     @IBAction func operate(sender: UIButton) {
         if userTyping {
             enter()
         }
+
         if let operation = sender.currentTitle {
+            historyValue += operation
             if let result = brain.performOperation(operation) {
                 displayValue = result
             } else {
@@ -42,12 +58,23 @@ class ViewController: UIViewController {
     }
     
   
+    @IBAction func clearCalc(sender: UIButton) {
+        
+        displayValue = 0
+        historyValue = ""
+        brain.clearStack()
+        userTyping = false
+        decimalEntered = false
+        
+    }
     
  
     
     @IBAction func enter() {
         userTyping = false
-        brain.pushOperand(displayValue)
+        
+        historyValue += String(displayValue)
+        
         if let result = brain.pushOperand(displayValue){
             displayValue = result
         } else {
@@ -62,6 +89,16 @@ class ViewController: UIViewController {
         set {
             display.text = "\(newValue)"
             userTyping = false
+            decimalEntered = false
+        }
+    }
+    
+    var historyValue: String {
+        get {
+            return history.text!
+        }
+        set {
+            history.text = "\(newValue) "
         }
     }
 }
