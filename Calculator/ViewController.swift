@@ -51,7 +51,7 @@ class ViewController: UIViewController {
             if let result = brain.performOperation(operation) {
                 displayValue = result
             } else {
-                displayValue = 0
+                displayValue = nil
             }
         }
 
@@ -60,7 +60,7 @@ class ViewController: UIViewController {
   
     @IBAction func clearCalc(sender: UIButton) {
         
-        displayValue = 0
+        displayValue = nil
         historyValue = ""
         brain.clearStack()
         userTyping = false
@@ -73,21 +73,21 @@ class ViewController: UIViewController {
     @IBAction func enter() {
         userTyping = false
         
-        historyValue += String(displayValue)
+        historyValue += String(displayValue!)
         
-        if let result = brain.pushOperand(displayValue){
+        if let result = brain.pushOperand(displayValue!){
             displayValue = result
         } else {
-            displayValue = 0
+            displayValue = nil
         }
     }
     
-    var displayValue: Double{
+    var displayValue: Double?{
         get {
             return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
         }
         set {
-            display.text = "\(newValue)"
+            display.text = "\(newValue!)"
             userTyping = false
             decimalEntered = false
         }
