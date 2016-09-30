@@ -23,11 +23,12 @@ class ViewController: UIViewController {
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
         if userTyping{
-            display.text = display.text! + digit
+            display.text! = display.text! + digit
         } else {
-            display.text = digit
-            userTyping = true
+            display.text! = digit
+            
         }
+        userTyping = true
         
     }
     
@@ -43,51 +44,43 @@ class ViewController: UIViewController {
 
     @IBAction func operate(sender: UIButton) {
         if userTyping {
-            enter()
+            brain.description += String(displayValue!)
+            brain.setOperand(displayValue!)
+            userTyping = false
         }
 
         if let operation = sender.currentTitle {
-            historyValue += operation
-            if let result = brain.performOperation(operation) {
-                displayValue = result
-            } else {
-                displayValue = nil
-            }
+            brain.description += String(operation)
+            brain.performOperation(operation)
         }
+        displayValue = brain.result
 
     }
     
   
     @IBAction func clearCalc(sender: UIButton) {
         
-        displayValue = nil
-        historyValue = ""
-        brain.clearStack()
+        brain.clear()
+        historyValue = " "
         userTyping = false
         decimalEntered = false
         
     }
     
  
-    
-    @IBAction func enter() {
-        userTyping = false
-        
-        historyValue += String(displayValue!)
-        
-        if let result = brain.pushOperand(displayValue!){
-            displayValue = result
-        } else {
-            displayValue = nil
-        }
-    }
+   
     
     var displayValue: Double?{
         get {
-            return NSNumberFormatter().numberFromString(display.text!)!.doubleValue
+            return Double(display.text!)!
         }
         set {
-            display.text = "\(newValue!)"
+            if let result = newValue {
+                display.text! = String(result)
+            }
+            else{
+                display.text! = "0"
+            }
             userTyping = false
             decimalEntered = false
         }
