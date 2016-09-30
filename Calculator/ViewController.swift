@@ -44,24 +44,36 @@ class ViewController: UIViewController {
 
     @IBAction func operate(sender: UIButton) {
         if userTyping {
-            brain.description += String(displayValue!)
+            
             brain.setOperand(displayValue!)
             userTyping = false
         }
 
         if let operation = sender.currentTitle {
-            brain.description += String(operation)
+            updateHistory(String(displayValue!), operation: operation)
             brain.performOperation(operation)
         }
         displayValue = brain.result
 
     }
     
+    func updateHistory(operand: String, operation: String) {
+        brain.description += String(displayValue!)
+        if operation != "=" {
+            brain.description += operation
+        }
+        history.text! = brain.description
+        if brain.isPartialResult{
+            history.text! += "..."
+        }
+        else {
+            history.text! += "="
+        }
+    }
   
     @IBAction func clearCalc(sender: UIButton) {
         
         brain.clear()
-        historyValue = " "
         userTyping = false
         decimalEntered = false
         
@@ -86,13 +98,14 @@ class ViewController: UIViewController {
         }
     }
     
-    var historyValue: String {
+    
+        /*
         get {
             return history.text!
         }
         set {
             history.text = "\(newValue) "
         }
-    }
+    }*/
 }
 

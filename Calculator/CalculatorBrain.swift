@@ -84,18 +84,11 @@ class CalculatorBrain{
     }
     
     
-    var description: String {
-        get {
-            
-        }
-        set {
-            
-        }
-    }
+    var description: String = ""
     
     var isPartialResult: Bool {
         get {
-            return pending != nil
+            return pending == nil
         }
     }
     
