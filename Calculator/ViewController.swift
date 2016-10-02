@@ -9,16 +9,42 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    @IBOutlet weak var display: UILabel!
     
-    @IBOutlet weak var history: UILabel!
+    //# MARK: - Objects and Properties
     
-    
+    var brain = CalculatorBrain()
     var userTyping = false
     var decimalEntered = false
     
-    var brain = CalculatorBrain()
+    //# MARK: - Display & History
+ 
+
+    @IBOutlet weak var display: UILabel!
+    
+    
+    @IBOutlet weak var history: UILabel!
+    
+    var displayValue: Double?{
+        get {
+            return Double(display.text!)!
+        }
+        set {
+            if let result = newValue {
+                display.text = String(result)
+                history.text = brain.description + (brain.isPartialResult ? " ..." : " =")
+            }
+            else{
+                display.text = "0"
+                history.text = " "
+                userTyping = false
+                decimalEntered = false
+            }
+            
+        }
+    }
+
+    
+    //# MARK: - Button Methods
 
     @IBAction func appendDigit(sender: UIButton) {
         let digit = sender.currentTitle!
@@ -44,68 +70,63 @@ class ViewController: UIViewController {
 
     @IBAction func operate(sender: UIButton) {
         if userTyping {
-            
             brain.setOperand(displayValue!)
             userTyping = false
         }
 
         if let operation = sender.currentTitle {
-            updateHistory(String(displayValue!), operation: operation)
             brain.performOperation(operation)
         }
         displayValue = brain.result
 
     }
     
-    func updateHistory(operand: String, operation: String) {
-        brain.description += String(displayValue!)
-        if operation != "=" {
-            brain.description += operation
-        }
-        history.text! = brain.description
-        if brain.isPartialResult{
-            history.text! += "..."
-        }
-        else {
-            history.text! += "="
-        }
-    }
+    
   
     @IBAction func clearCalc(sender: UIButton) {
         
         brain.clear()
+        displayValue = nil
         userTyping = false
         decimalEntered = false
         
     }
     
- 
-   
     
-    var displayValue: Double?{
-        get {
-            return Double(display.text!)!
+    @IBAction func setM() {
+        if let value = display.text {
+            brain.setVariableValue(Double(value)!, variableName: "M")
         }
-        set {
-            if let result = newValue {
-                display.text! = String(result)
-            }
-            else{
-                display.text! = "0"
-            }
-            userTyping = false
-            decimalEntered = false
-        }
+        
     }
     
     
-        /*
-        get {
-            return history.text!
+    @IBAction func pushM(sender: UIButton) {
+        if userTyping {
+            brain.setOperand("M")
+            userTyping = false
         }
-        set {
-            history.text = "\(newValue) "
+        if let digit = brain.getVariableValue("M") {
+            
+                display.text! = String(digit)
+        
         }
-    }*/
+
+    
+        
+    }
+    
+    
+    @IBAction func backSpace() {
+        if userTyping  {
+            display.text!.removeAtIndex(display.text!.endIndex.predecessor())
+        }
+        if display.text!.isEmpty {
+            userTyping  = false
+            displayValue = brain.result
+        }
+    }
+ 
+    
 }
 
