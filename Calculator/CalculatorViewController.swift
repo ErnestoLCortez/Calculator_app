@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CalculatorViewController: UIViewController {
+class ViewController: UIViewController {
     
     //# MARK: - Objects and Properties
     
